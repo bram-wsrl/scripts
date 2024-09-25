@@ -90,6 +90,42 @@ def add_contours(contours: contours_T, dtt: int):
     contours.extend(temps)
 
 
+def finetune_contours(contours: contours_T):
+    '''
+    Returns new contours list of dictionaries
+    
+    This function loops over all contour dictionairies in contours:
+    All positive discharges are copied into new dictionairies.
+    The first negative discharge is mapped to a discharge of zero and included
+    into the new dictionaries.
+    The other negative discharges are excluded.    
+    '''
+    contours_finetuned = []
+    
+    for contour in contours:
+        index_first_negative_discharge = None
+        for discharge_value in contour['discharge']:
+            if discharge_value < 0:
+                index_first_negative_discharge = list(contour['discharge']).index(discharge_value)
+                break               
+        
+        if index_first_negative_discharge is None:
+            head_list = contour["head"]
+            discharge_list = contour["discharge"]
+        else:
+            head_list = contour["head"][:index_first_negative_discharge+1]
+            discharge_list = contour["discharge"][:index_first_negative_discharge+1]
+            discharge_list[index_first_negative_discharge] = 0
+            
+        contours_finetuned.append({
+            "speed":contour["speed"],
+            "head":head_list,
+            "discharge":discharge_list
+            })    
+ 
+    return contours_finetuned
+
+
 def plot(contours: contours_T, figpath: Path):
     fig, ax = plt.subplots()
     for contour in contours:
