@@ -1,3 +1,4 @@
 output/*
 test_figs/*
 __pycache__/*
+.vscode/
