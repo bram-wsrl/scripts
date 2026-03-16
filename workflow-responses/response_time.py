@@ -5,7 +5,14 @@ import matplotlib.pyplot as plt
 
 def parse_duration(time_str):
     time_str = time_str.strip()
-    if 'm' in time_str and 's' in time_str:
+    if 'h' in time_str and 'm' in time_str and 's' in time_str:
+        hours, minutes_seconds = time_str.split('h')
+        hours = int(hours.strip())
+        minutes, seconds = minutes_seconds.split('m')
+        minutes = int(minutes.strip())
+        seconds = int(seconds.strip().replace('s', ''))
+        return hours * 3600 + minutes * 60 + seconds
+    elif 'm' in time_str and 's' in time_str:
         minutes, seconds = time_str.split('m')
         minutes = int(minutes.strip())
         seconds = int(seconds.strip().replace('s', ''))
@@ -20,7 +27,8 @@ def parse_duration(time_str):
         raise ValueError(f"Invalid time format: {time_str}")
 
 
-with open('log-data/ImportOpvlWaterCGOO2h.txt', 'r') as file:
+filename = 'log-data/ImportOpvlWaterCGOO2h-20260316.txt'
+with open(filename, 'r') as file:
     lines = file.readlines()
 
 # split line on tab
